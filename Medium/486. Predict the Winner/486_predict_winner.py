@@ -1,4 +1,6 @@
 """
+FROM: https://leetcode.com/problems/predict-the-winner/
+
 Given an array of scores that are non-negative integers. Player 1 picks one of the numbers from either end of the array followed by the player 2 and then player 1 and so on. Each time a player picks a number, that number will not be available for the next player. This continues until all the scores have been chosen. The player with the maximum score wins.
 
 Given an array of scores, predict whether player 1 is the winner. You can assume each player plays to maximize his score.
@@ -29,42 +31,54 @@ Finally, player 1 has more score (234) than player 2 (12), so you need to return
 
 # I'm thinking some sort of tree structure can be used to solve this; maybe I can use minimax algorithm?
 # the leaves of such a tree would be where the pointer to the left and right node are equal to each other, meaning they are pointing to the same element in nums
+# scratch the tree, i think the two pointer method with the nums list is fine
 
 # from constraint 3, it seems I can assume both players will play optimally, so I will prune from the tree all the branches where players are not playing optimally, or where they don't choose the max from all possible numbers
 # NOOOOOO, this is clearly not a valid assumption due to test case 2!!!!!! 
+# optimally means the players can look ahead it seems
+# what's important isn't being greedy, but looking ahead to prevent the other player from getting a high score, as in test case 2
 
-# scratch the tree, i think the two pointer method with the nums list is fine
+# unfortunately, i had to look up the solution since I was super stuck T-T
+# it turns out this is a minimax problem smh, I knew it, I knew it
+# my attempted solution will mirror the minimax algorithm pseudocode from the Russell and Norvig AI textbook
+
+# FINALLY COMPLETED: 10:51pm 2/11/21
+# I had a lot of trouble figuring this out, even after knowing I could solve it using minimax
+# at first, I didn't understand what values I needed to return and what each function should look like, but I was able to figure it out
+# my solution apparently has pretty good space complexity; from my understanding, it is storing constant space in each function n times, where n is the size of nums since there can only be n turns of the game
+# however, my running time is very high due to the fact that I'm basically building a binary tree; I think my running time is O(2^n)
+# to improve on that, I should prune the tree; maybe alpha-beta pruning?
 
 class Solution:
     def PredictTheWinner(self, nums: List[int]) -> bool:
-        numsLen = len(nums)
-
-        # if player one always goes first, then with an list of size 1, player 1 ends up winning
-        if numsLen == 1:
+        left = 0
+        right = len(nums) - 1
+        playerTurn = 1 # player2 = -1; player1 = 1
+        
+        if left == right:
             return True
 
-        # list of player scores
-        player1 = []
-        player2 = []
+        pickLeft = playerTurn * nums[left] + self.minValue(nums, left + 1, right, -playerTurn)
+        pickRight = playerTurn * nums[right] + self.minValue(nums, left, right - 1, -playerTurn) 
+        
+        return max(pickLeft, pickRight) >= 0
 
-        left = 0
-        right = numsLen - 1
-        playerTurn = 0 # player1 = 0; player2 = 1
-        while left <= right:
-            if playerTurn:
-                player2.append(max(nums[left], nums[right]))
-                if (max(nums[left], nums[right]) == nums[left]):
-                    left += 1
-                else:
-                    right -=1
-                
-                if (sum(player1) + sum(nums[left+1:right])) < sum(player2):
-                    return False
-                playerTurn = 0
-            else:
-                player1.append(max(nums[left], nums[right]))
-                if (max(nums[left], nums[right]) == nums[left]):
-                    left += 1
-                else:
-                    right -=1
-                playerTurn = 1
+    def maxValue(self, nums: list[int], left: int, right: int, playerTurn: int):
+        # check if in terminal state
+        if left == right:
+            return playerTurn * nums[left]
+
+        pickLeft = playerTurn * nums[left] + self.minValue(nums, left + 1, right, -playerTurn)
+        pickRight = playerTurn * nums[right] + self.minValue(nums, left, right - 1, -playerTurn) 
+        
+        return max(pickLeft, pickRight)
+
+    def minValue(self, nums: list[int], left: int, right: int, playerTurn: int):
+        # check if in terminal state
+        if left == right:
+            return playerTurn * nums[left]
+
+        pickLeft = playerTurn * nums[left] + self.maxValue(nums, left + 1, right, -playerTurn)
+        pickRight = playerTurn * nums[right] + self.maxValue(nums, left, right - 1, -playerTurn) 
+        
+        return min(pickLeft, pickRight)
