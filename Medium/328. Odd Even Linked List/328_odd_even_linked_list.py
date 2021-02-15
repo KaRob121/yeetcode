@@ -12,7 +12,12 @@ Constraints:
 
 # THOUGHTS:
 # Make sure to consider edge cases! I didn't think about the edge case where the given list is empty, which caused a Runtime Error.
-# I saved some memory from my original code by deleting the odd_head variable; head IS the odd list head. 
+# I saved some memory from my original code by deleting the odd_head variable; head IS the odd list head.
+# It is O(n) space complexity because odd and even combined go through all elements of the list at most one time.
+# It is O(1) space complexity because I am only keeping track of the four pointers: head, even_head, odd, and even.
+# I am also trying to make my code follow style conventions as much as possible, which is why I am using snake_case for the function and variable names.
+
+# ---------------------------- ACTUAL CODE BELOW 
 
 # Definition for singly-linked list.
 # class ListNode:
@@ -22,7 +27,7 @@ Constraints:
 class Solution:
     def create_odd_even_list(self, head: ListNode) -> ListNode:
         """
-        Using a two pointer approach, groups all elements in odd places in the given list 
+        Using a four pointer approach, groups all elements in odd places in the given list 
         followed by the elements in even places with O(1) space and O(n) time complexity
         """
         
