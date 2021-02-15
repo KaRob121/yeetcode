@@ -12,6 +12,7 @@ Constraints:
 
 # THOUGHTS:
 # Make sure to consider edge cases! I didn't think about the edge case where the given list is empty, which caused a Runtime Error.
+# I saved some memory from my original code by deleting the odd_head variable; head IS the odd list head. 
 
 # Definition for singly-linked list.
 # class ListNode:
@@ -19,7 +20,7 @@ Constraints:
 #         self.val = val
 #         self.next = next
 class Solution:
-    def oddEvenList(self, head: ListNode) -> ListNode:
+    def create_odd_even_list(self, head: ListNode) -> ListNode:
         """
         Using a two pointer approach, groups all elements in odd places in the given list 
         followed by the elements in even places with O(1) space and O(n) time complexity
@@ -29,11 +30,10 @@ class Solution:
         if not head:
             return head
     
-        # Heads of odd and even lists
-        odd_head = head
+        # Head of even list; head of odd list is already defined
         even_head = head.next
         # Iterators
-        odd = odd_head
+        odd = head
         even = even_head
         
         # Groups all elements in odd places in the list together; same for elements in even places 
@@ -47,4 +47,4 @@ class Solution:
         # Appends the even list to the end of the odd list
         odd.next = even_head
         
-        return odd_head
+        return head
