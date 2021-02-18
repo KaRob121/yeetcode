@@ -34,7 +34,7 @@ Constraints:
 class Solution:
     def partition(self, head: ListNode, x: int) -> ListNode:
     """
-    Partitions a nodelist such that all of the nodes with values less than x come before all the nodes with values greater than or equal to x
+    Partitions a nodelist such that all of the nodes with values less than x come before all the nodes with values greater than or equal to x.
 
     Has O(n) time complexity, where n is the number of nodes, since the loop only goes through each node in the nodelist once. 
 
